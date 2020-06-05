@@ -1,0 +1,8 @@
+- hosts: 127.0.0.1
+  connection: local
+  tags:
+    - case-1
+  vars:
+    ansible_unit_test: True
+  roles:
+    - role: ../..

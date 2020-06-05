@@ -1,0 +1,73 @@
+# add user specific settings
+---
+- name: add user to group
+  become: yes
+  command: "usermod -a -G microk8s {{ user }}"
+  changed_when: true
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+
+- name: create .kube folder for the user
+  become: yes
+  become_user: '{{ user }}'
+  file:
+    path: ~/.kube
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user }}'
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+
+- name: create kubectl config
+  become: yes
+  changed_when: true
+  shell: microk8s config > /home/{{ user }}/.kube/config
+  args:
+    executable: /bin/bash
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+
+- name: reaffirm permission on files
+  become: yes
+  file:
+    path: ~/.kube
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    recurse: yes
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+
+- name: add helm repository to user
+  become: yes
+  become_user: '{{ user }}'
+  shell: "helm repo add stable https://kubernetes-charts.storage.googleapis.com/"
+  args:
+    executable: /bin/bash
+  changed_when: true
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+  when: microk8s_plugin_helm3_enable
+
+- name: update helm repos
+  become: yes
+  become_user: '{{ user }}'
+  shell: "helm repo update"
+  args:
+    executable: /bin/bash
+  changed_when: true
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+  when: microk8s_plugin_helm3_enable

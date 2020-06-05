@@ -1,0 +1,108 @@
+# install dashboard
+---
+- name: Check if namespace exists
+  become: yes
+  command: "microk8s kubectl get namespaces"
+  changed_when: true
+  register: namespace_result
+
+- name: Define deshboard variable default
+  set_fact:
+    kubernetes_dashboard_exists: false
+
+- name: Define dashboard variable if exists
+  set_fact:
+    kubernetes_dashboard_exists: true
+  when:
+    - namespace_result is defined and namespace_result.stdout is defined and namespace_result.stdout not in (None, '', omit)
+    - namespace_result.stdout is search(microk8s_plugin_dashboard_namespace)
+
+- name: Create dashboard namsepace
+  become: yes
+  command: "microk8s kubectl create namespace {{ microk8s_plugin_dashboard_namespace }}"
+  changed_when: true
+  when: not kubernetes_dashboard_exists
+
+
+- name: Check if dashboard secret exists
+  become: yes
+  command: "microk8s kubectl get secrets -n {{ microk8s_plugin_dashboard_namespace }}"
+  changed_when: true
+  register: secret_result
+
+- name: Define secret variable default
+  set_fact:
+    kubernetes_secret_exists: false
+
+- name: Define secret variable if exists
+  set_fact:
+    kubernetes_secret_exists: true
+  when:
+    - secret_result is defined and secret_result.stdout is defined and secret_result.stdout not in (None, '', omit)
+    - secret_result.stdout is search(microk8s_plugin_dashboard_secret)
+
+- name: Delete secret if exists
+  become: yes
+  command: "microk8s kubectl -n {{ microk8s_plugin_dashboard_namespace }} delete secret {{ microk8s_plugin_dashboard_secret }}"
+  changed_when: true
+  ignore_errors: True
+  when: kubernetes_secret_exists
+
+- name: Create dashboard secret for certs
+  become: yes
+  command: |
+    microk8s kubectl -n {{ microk8s_plugin_dashboard_namespace }}
+              create secret generic {{ microk8s_plugin_dashboard_secret }}
+              --from-file=tls.crt=/etc/certs/server.pem
+              --from-file=tls.key=/etc/certs/server-key.pem
+              --from-file=ca.crt=/etc/certs/localhost-ca.pem
+  changed_when: true
+
+- name: create dashboard manifest folder
+  become: yes
+  file:
+    path: '{{ microk8s_plugin_dashboard_manifest_dir }}'
+    state: directory
+
+- name: Download manifest file
+  become: yes
+  get_url:
+    url: 'https://raw.githubusercontent.com/kubernetes/dashboard/{{ microk8s_plugin_dashboard_version }}/aio/deploy/recommended.yaml'
+    dest: '{{ microk8s_plugin_dashboard_manifest_dir }}'
+    checksum: '{{ microk8s_plugin_dashboard_manifest_file_checksum }}'
+
+- name: Specify tls-cert-file
+  become: yes
+  lineinfile:
+    path: '{{ microk8s_plugin_dashboard_manifest_dir }}/recommended.yaml'
+    insertafter: '- --auto-generate-certificates'
+    line: '{{ item.line }}'
+  with_items:
+    - { line: '            - --tls-cert-file=/tls.crt' }
+    - { line: '            - --tls-key-file=/tls.key' }
+
+- name: Deploy dashboard
+  become: yes
+  command: "microk8s kubectl apply -n {{ microk8s_plugin_dashboard_namespace }} -f {{ microk8s_plugin_dashboard_manifest_dir }}/recommended.yaml"
+  changed_when: true
+  register: deployment_result
+
+- name: Dashboard role template
+  become: yes
+  template:
+    src: kubernetes-dashboard-custom.yml
+    dest: '{{ microk8s_plugin_dashboard_manifest_dir }}/kubernetes-dashboard-custom.yml'
+    owner: root
+    group: root
+
+- name: Deploy dashboard user roles
+  become: yes
+  command: "microk8s kubectl apply -n {{ microk8s_plugin_dashboard_namespace }} -f {{ microk8s_plugin_dashboard_manifest_dir }}/kubernetes-dashboard-custom.yml"
+  changed_when: true
+  register: deploymentrole_result
+
+- name: Remove temp directory
+  become: yes
+  file:
+    path: '{{ microk8s_plugin_dashboard_manifest_dir }}'
+    state: absent
