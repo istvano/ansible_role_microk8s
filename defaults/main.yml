@@ -14,7 +14,7 @@ microk8s_plugin_registry_size: 20Gi
 
 microk8s_plugin_helm3_repositories:
   - name: stable
-    url: https://kubernetes-charts.storage.googleapis.com/
+    url: https://charts.helm.sh/stable
 
 # users to set up microk8s for
 users: []
