@@ -115,4 +115,4 @@
   become: yes
   command: "microk8s.enable host-access"
   changed_when: true
-  when: microk8s_plugin_host-access_enable
+  when: microk8s_plugin_host_access_enable

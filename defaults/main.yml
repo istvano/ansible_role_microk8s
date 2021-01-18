@@ -12,7 +12,7 @@ microk8s_plugin_ingress_enable: true
 microk8s_plugin_dashboard_enable: true
 microk8s_plugin_fluentd_enable: false
 microk8s_plugin_prometheus_enable: false
-microk8s_plugin_host-access_enable: true
+microk8s_plugin_host_access_enable: true
 microk8s_plugin_metallb_enable: false
 microk8s_plugin_registry_size: 20Gi
 
