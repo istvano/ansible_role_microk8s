@@ -28,7 +28,7 @@ are shown below):
 
 ```yaml
 # microk8s version number
-microk8s_version: '1.18/stable'
+microk8s_version: '1.19/stable'
 
 
 Example Playbook
@@ -44,3 +44,12 @@ License
 -------
 
 MIT
+
+Test
+-------
+
+* ./moleculew lint
+* ./moleculew create
+* ./moleculew list
+* ./moleculew check
+* ./moleculew test

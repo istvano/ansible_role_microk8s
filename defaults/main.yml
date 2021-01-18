@@ -1,6 +1,6 @@
 ---
 # defaults file for ansible_role_microk8s
-microk8s_version: "1.18/stable"
+microk8s_version: "1.19/stable"
 
 microk8s_plugin_dns_enable: true
 microk8s_plugin_rbac_enable: true
@@ -9,8 +9,13 @@ microk8s_plugin_registry_enable: true
 microk8s_plugin_metricsserver_enable: true
 microk8s_plugin_helm3_enable: true
 microk8s_plugin_ingress_enable: true
-
+microk8s_plugin_dashboard_enable: true
+microk8s_plugin_fluentd_enable: false
+microk8s_plugin_prometheus_enable: false
+microk8s_plugin_host-access_enable: true
+microk8s_plugin_metallb_enable: false
 microk8s_plugin_registry_size: 20Gi
+
 
 microk8s_plugin_helm3_repositories:
   - name: stable
@@ -18,11 +23,3 @@ microk8s_plugin_helm3_repositories:
 
 # users to set up microk8s for
 users: []
-
-microk8s_plugin_dashboard_enable: true
-microk8s_plugin_dashboard_version: v2.0.1
-microk8s_plugin_dashboard_namespace: kubernetes-dashboard
-microk8s_plugin_dashboard_secret: kubernetes-dashboard-certs
-microk8s_plugin_dashboard_manifest_dir: /tmp/dashboard
-microk8s_plugin_dashboard_manifest_file_checksum: sha256:3f6a378594f47e6941176e1d0af8f3ba04786b745145977860d9097a230ef68f
-microk8s_plugin_dashboard_custom_file: kubernetes-dashboard-custom.yml

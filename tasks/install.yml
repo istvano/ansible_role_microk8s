@@ -86,3 +86,33 @@
   command: "microk8s.enable ingress"
   changed_when: true
   when: microk8s_plugin_ingress_enable
+
+- name: Enable dashboard
+  become: yes
+  command: "microk8s.enable dashboard"
+  changed_when: true
+  when: microk8s_plugin_dashboard_enable
+
+- name: Enable fluentd
+  become: yes
+  command: "microk8s.enable fluentd"
+  changed_when: true
+  when: microk8s_plugin_fluentd_enable
+
+- name: Enable prometheus
+  become: yes
+  command: "microk8s.enable prometheus"
+  changed_when: true
+  when: microk8s_plugin_prometheus_enable
+
+- name: Enable metallb
+  become: yes
+  command: "microk8s.enable metallb"
+  changed_when: true
+  when: microk8s_plugin_metallb_enable
+
+- name: Enable host access
+  become: yes
+  command: "microk8s.enable host-access"
+  changed_when: true
+  when: microk8s_plugin_host-access_enable
