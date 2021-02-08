@@ -23,3 +23,6 @@ microk8s_plugin_helm3_repositories:
 
 # users to set up microk8s for
 users: []
+
+microk8s_enable_HA: false
+microk8s_group_HA: "microk8s_HA"

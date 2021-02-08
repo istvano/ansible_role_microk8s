@@ -1,0 +1,45 @@
+---
+
+- name: Enumerate all cluster hosts within the hosts file
+  blockinfile:
+    dest: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
+    content: |
+      {% for host in groups[microk8s_group_HA] %}
+      {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
+      {% endfor %}
+
+- name: Find the designated host
+  set_fact:
+    designated_host: '{{ (groups[microk8s_group_HA]|sort)[0] }}'
+
+- block:
+  - name: Waiting for microk8s to be ready on microk8s host master
+    command: "microk8s status --wait-ready"
+    delegate_to: "{{ designated_host }}"
+    delegate_facts: true
+    changed_when: false
+
+  - name: Get the microk8s join command from the microk8s master
+    shell: "microk8s add-node | head -n 2 | tail -n 1"
+    delegate_to: "{{ designated_host }}"
+    delegate_facts: true
+    changed_when: false
+    register: microk8s_join_command
+
+  - name: Get microk8s cluster nodes
+    command: "microk8s kubectl get node"
+    delegate_to: "{{ designated_host }}"
+    delegate_facts: true
+    changed_when: false
+    register: microk8s_cluster_node
+
+  - name: Waiting for microk8s to be ready on microk8s host node
+    command: "microk8s status --wait-ready"
+    changed_when: false
+
+  - name: Set the microk8s join command on the microk8s node
+    command: "{{ microk8s_join_command.stdout }}"
+    when: microk8s_cluster_node.stdout.find(inventory_hostname) == -1
+
+  when: inventory_hostname != designated_host
