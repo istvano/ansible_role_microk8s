@@ -26,3 +26,5 @@ users: []
 
 microk8s_enable_HA: false
 microk8s_group_HA: "microk8s_HA"
+
+microk8s_disable_snap_autoupdate: false
