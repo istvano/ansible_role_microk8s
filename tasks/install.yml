@@ -130,6 +130,13 @@
   changed_when: "'Addon host-access is already enabled' not in command_result.stdout"
   when: microk8s_plugin_host_access_enable
 
+- name: Enable traefik
+  become: yes
+  command: "microk8s.enable traefik"
+  register: command_result
+  changed_when: "'Addon traefik is already enabled' not in command_result.stdout"
+  when: microk8s_plugin_traefik_enable
+
 - name: Disable snap autoupdate
   blockinfile:
     dest: /etc/hosts
