@@ -18,11 +18,18 @@
   changed_when: false
   register: mk8sstatusout
 
-- name: Create alias
+- name: Create kubectl alias
   become: yes
   command: "snap alias microk8s.kubectl kubectl"
   changed_when: false
-  register: aliasout
+  register: aliaskubectlout
+  
+- name: Create helm3 alias
+  become: yes
+  command: "snap alias microk8s.helm3 helm"
+  changed_when: false
+  register: aliashelmout
+  when: microk8s_plugin_helm3_enable
 
 - name: create folder for microk8s certificates
   become: yes
