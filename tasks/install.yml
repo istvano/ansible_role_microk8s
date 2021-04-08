@@ -4,6 +4,15 @@
       - snapd
     state: present
   become: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Make sure snapd is installed
+  pacman:
+    name:
+      - snapd
+    state: present
+  become: yes
+  when: ansible_distribution == 'Archlinux'
 
 - name: Install microk8s
   become: yes
