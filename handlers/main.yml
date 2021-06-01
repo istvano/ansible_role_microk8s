@@ -1,2 +1,6 @@
 ---
 # handlers file for ansible_role_microk8s
+
+- name: Refresh certs
+  become: yes
+  command: microk8s refresh-certs
