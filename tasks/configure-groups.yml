@@ -9,7 +9,7 @@
     loop_var: user
     label: '{{ user }}'
 
-- name: create .kube folder for the user
+- name: Create .kube folder for the user
   become: yes
   become_user: '{{ user }}'
   file:
@@ -17,6 +17,7 @@
     state: directory
     owner: '{{ user }}'
     group: '{{ user }}'
+    mode: 0750
   with_items: '{{ users }}'
   loop_control:
     loop_var: user
