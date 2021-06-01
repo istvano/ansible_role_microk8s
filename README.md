@@ -69,13 +69,6 @@ MIT
     ```
     $ pip install ansible
     ```
-* Add the following to your `.yamllint`:
-    ```
-    ignore: |
-      venv/
-    ```
-    It might be necessary to run `molecule lint` first in order to create the
-    `.yamllint` file.
 * Run the test commands:
   * `molecule lint`
   * `molecule create`
