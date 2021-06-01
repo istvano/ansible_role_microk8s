@@ -1,11 +1,9 @@
-Ansible Role: microk8s
-==================
+# Ansible Role: microk8s
 
 Role to download and install [microk8s](https://microk8s.io/) the smallest, simplest, pure production K8s.
 
 
-Requirements
-------------
+## Requirements
 
 * Ansible >= 2.7
 
@@ -20,8 +18,7 @@ Requirements
             * Bionic (18.04)
 
 
-Role Variables
---------------
+## Role Variables
 
 Some variables available in this role are listed here.  The full set is
 defined in `[defaults/main.yml](defaults/main.yml)`.
@@ -32,8 +29,7 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
 * `microk8s_group_HA: microk8s_HA`: Hostgroup whose members will form HA
   cluster.
 
-Example Playbook
-----------------
+## Example Playbook
 
 ```yaml
 - hosts: servers
@@ -41,23 +37,21 @@ Example Playbook
     - role: istvano.microk8s
 ```
 
-License
--------
+## License
 
 MIT
 
-Test
--------
+## Test
 
-## Using Molecule wrapper and system Python
+### Using Molecule wrapper and system Python
 
-* ./moleculew lint
-* ./moleculew create
-* ./moleculew list
-* ./moleculew check
-* ./moleculew test
+* `./moleculew lint`
+* `./moleculew create`
+* `./moleculew list`
+* `./moleculew check`
+* `./moleculew test`
 
-## Using Python virtual environment
+### Using Python virtual environment
 
 * Set up virtual environment
     ```
