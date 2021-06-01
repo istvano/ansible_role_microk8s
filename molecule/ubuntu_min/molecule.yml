@@ -5,8 +5,10 @@ dependency:
 driver:
   name: docker
 
-lint:
-  name: yamllint
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
 
 platforms:
   - name: ansible_role_microk8s_ubuntu_min
