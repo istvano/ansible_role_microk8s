@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: microk8s
+  namespace: istvano
   description: Ansible role for installing and set-up microk8s.
   author: Istvan Orban
   company: Urban and Co Ltd.

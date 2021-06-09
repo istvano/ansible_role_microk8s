@@ -295,3 +295,7 @@ $RECYCLE.BIN/
 __pycache__
 .cache
 .molecule
+
+### virtual env ###
+venv/
+.venv/

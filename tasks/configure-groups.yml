@@ -9,7 +9,7 @@
     loop_var: user
     label: '{{ user }}'
 
-- name: create .kube folder for the user
+- name: Create .kube folder for the user
   become: yes
   become_user: '{{ user }}'
   file:
@@ -17,6 +17,7 @@
     state: directory
     owner: '{{ user }}'
     group: '{{ user }}'
+    mode: 0750
   with_items: '{{ users }}'
   loop_control:
     loop_var: user
@@ -49,10 +50,9 @@
 - name: add helm repository to user
   become: yes
   become_user: '{{ user }}'
-  shell: "helm repo add stable https://charts.helm.sh/stable"
-  args:
-    executable: /bin/bash
-  changed_when: true
+  community.kubernetes.helm_repository:
+    name: stable
+    repo_url: https://charts.helm.sh/stable
   with_items: '{{ users }}'
   loop_control:
     loop_var: user
@@ -62,10 +62,8 @@
 - name: update helm repos
   become: yes
   become_user: '{{ user }}'
-  shell: "helm repo update"
-  args:
-    executable: /bin/bash
-  changed_when: true
+  community.kubernetes.helm:
+    update_cache: yes
   with_items: '{{ users }}'
   loop_control:
     loop_var: user

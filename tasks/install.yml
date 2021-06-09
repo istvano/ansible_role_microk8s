@@ -32,7 +32,7 @@
   command: "snap alias microk8s.kubectl kubectl"
   changed_when: false
   register: aliaskubectlout
-  
+
 - name: Create helm3 alias
   become: yes
   command: "snap alias microk8s.helm3 helm"
@@ -40,19 +40,21 @@
   register: aliashelmout
   when: microk8s_plugin_helm3_enable
 
-- name: create folder for microk8s certificates
+- name: Create folder for microk8s certificates
   become: yes
   file:
     path: /usr/share/ca-certificates/extra
     state: directory
+    mode: 0750
 
-- name: copy certificates
+- name: Copy certificates
   become: yes
   copy:
     src: "{{ item }}"
     dest: /usr/share/ca-certificates/extra
     remote_src: yes
     force: yes
+    mode: 0644
   with_fileglob:
     - /var/snap/microk8s/current/certs/*ca*.crt
 
