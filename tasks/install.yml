@@ -43,7 +43,7 @@
 - name: Create custom certificates
   become: yes
   ansible.builtin.template:
-    src: microk8s_csr_template
+    src: "{{ microk8s_csr_template }}"
     dest: /var/snap/microk8s/current/certs/csr.conf.template
     mode: 0644
   when: microk8s_csr_template is defined and microk8s_csr_template is file
