@@ -34,3 +34,6 @@ microk8s_enable_HA: false
 
 # hostgroup whose members will form high-availability cluster
 microk8s_group_HA: "microk8s_HA"
+
+# for setting up custom certificate request.  Set to template name to enable
+#microk8s_csr_template: null

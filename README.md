@@ -2,34 +2,35 @@
 
 Role to download and install [microk8s](https://microk8s.io/) the smallest, simplest, pure production K8s.
 
-
 ## Requirements
 
 * Ansible >= 2.7
-
 * Linux Distribution
-
     * Debian Family
-
-
         * Ubuntu
-
             * Xenial (16.04)
             * Bionic (18.04)
+    * Arch Linux (untested)
 
+## License
 
-## Role Variables
+MIT
+
+## Usage
+
+### Role Variables
 
 Some variables available in this role are listed here.  The full set is
 defined in `[defaults/main.yml](defaults/main.yml)`.
 
 * `microk8s_version`: Version to use, defaults to `1.19/stable`.
-* `microk8s_plugin_*_enable: true`: Enable/disable various plugins.
-* `microk8s_enable_HA: false`: Enable/disable high-availability.
-* `microk8s_group_HA: microk8s_HA`: Hostgroup whose members will form HA
-  cluster.
+* `microk8s_plugin_*_enable`: Enable/disable various plugins.
+* `microk8s_enable_HA`: Enable/disable high-availability.
+* `microk8s_group_HA`: Hostgroup whose members will form HA cluster.
+* `microk8s_csr_template`: If defined, will cause a custom CSR to be used in
+  generating certificates.
 
-## Example Playbook
+### Basic playbook
 
 ```yaml
 - hosts: servers
@@ -37,11 +38,20 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
     - role: istvano.microk8s
 ```
 
-## License
+### Custom certificate request template
 
-MIT
+It might be useful to customize the certificate request template used by
+MicroK8s in generating cluster certificates.  For example, additional SANs can
+be added to the certificates such that the MicroK8s certificates validate when
+addressed from outside the cluster, such as through a reverse proxy.
 
-## Test
+To generate a CSR template, the easiest is probably to use the role without
+a template, and then copy the CSR in
+`/var/snap/microk8s/current/certs/csr.conf.template` to your playbook's
+templates directory, make the edits and set the `microk8s_csr_template`
+variable accordingly, and re-run the playbook.
+
+## Testing
 
 ### Using Molecule wrapper and system Python
 
@@ -69,13 +79,6 @@ MIT
     ```
     $ pip install ansible
     ```
-* Add the following to your `.yamllint`:
-    ```
-    ignore: |
-      venv/
-    ```
-    It might be necessary to run `molecule lint` first in order to create the
-    `.yamllint` file.
 * Run the test commands:
   * `molecule lint`
   * `molecule create`

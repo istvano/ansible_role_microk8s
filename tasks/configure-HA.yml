@@ -1,6 +1,7 @@
 ---
 
 - name: Enumerate all cluster hosts within the hosts file
+  become: yes
   blockinfile:
     dest: /etc/hosts
     marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
