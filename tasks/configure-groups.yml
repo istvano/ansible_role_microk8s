@@ -63,7 +63,10 @@
   become: yes
   become_user: '{{ user }}'
   community.kubernetes.helm:
-    update_cache: yes
+    name: stable
+    state: absent
+    namespace: default
+    update_repo_cache: yes
   with_items: '{{ users }}'
   loop_control:
     loop_var: user
