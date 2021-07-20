@@ -37,7 +37,7 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
   roles:
     - role: istvano.microk8s
       vars:
-        plugins:
+        microk8s_plugins:
           istio: true
           ingress: true
 ```
