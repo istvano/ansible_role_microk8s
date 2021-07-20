@@ -78,6 +78,8 @@
   become: yes
   loop: "{{ plugins | dict2items | item.key != 'registry'}}"
   command: "microk8s.enable {{ item.key }}"
+  loop_control: 
+    label: {{ item.name }}
   register: command_result
   changed_when: "'Addon {{ item.key }} is already enabled' not in command_result.stdout"
   when: item.value
@@ -86,6 +88,8 @@
   become: yes
   loop: "{{ plugins | dict2items | item.value != 'registry'}}"
   command: "microk8s.disable {{ item.key }}"
+  loop_control: 
+    label: {{ item.name }}
   register: command_result
   changed_when: "'Addon {{ item.key }} is already disabled' not in command_result.stdout"
   when: not item.value
