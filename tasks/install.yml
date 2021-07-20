@@ -38,7 +38,7 @@
   command: "snap alias microk8s.helm3 helm"
   changed_when: false
   register: aliashelmout
-  when: microk8s_plugin_helm3_enable
+  when: plugins.helm
 
 - name: Create custom certificates
   become: yes
@@ -96,17 +96,17 @@
 
 - name: Enable registry
   become: yes
-  command: "microk8s.enable registry:size={{ microk8s_plugin_registry_size }}"
+  command: "microk8s.enable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_registry_enable
+  when: plugins.registry
 
 - name: Disable registry
   become: yes
-  command: "microk8s.disable registry:size={{ microk8s_plugin_registry_size }}"
+  command: "microk8s.disable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_registry_enable
+  when: not plugins.registry
 
 - name: Disable snap autoupdate
   blockinfile:
