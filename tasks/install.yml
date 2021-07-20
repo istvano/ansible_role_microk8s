@@ -74,25 +74,25 @@
   register: command_result
   changed_when: "'0 added, 0 removed' not in command_result.stdout"
 
-- name: Enable {{ item.key }}
+- name: Enable plugins
   become: yes
-  loop: "{{ plugins | dict2items | item.key != 'registry'}}"
+  loop: "{{ plugins | dict2items }}"
   command: "microk8s.enable {{ item.key }}"
   loop_control: 
     label: "{{ item.key }}"
   register: command_result
   changed_when: "'Addon {{ item.key }} is already enabled' not in command_result.stdout"
-  when: item.value
+  when: item.value and item.key != "registry"
 
-- name: Disable {{ item.key }}
+- name: Disable plugins
   become: yes
-  loop: "{{ plugins | dict2items | item.value != 'registry'}}"
+  loop: "{{ plugins | dict2items }}"
   command: "microk8s.disable {{ item.key }}"
   loop_control: 
     label: "{{ item.key }}"
   register: command_result
   changed_when: "'Addon {{ item.key }} is already disabled' not in command_result.stdout"
-  when: not item.value
+  when: not item.value and item.key != "registry"
 
 - name: Enable registry
   become: yes
