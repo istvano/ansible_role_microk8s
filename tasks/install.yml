@@ -76,7 +76,7 @@
 
 - name: Enable plugins
   become: yes
-  loop: "{{ plugins | dict2items }}"
+  loop: "{{ microk8s_plugins | dict2items }}"
   command: "microk8s.enable {{ item.key }}"
   loop_control: 
     label: "{{ item.key }}"
@@ -86,7 +86,7 @@
 
 - name: Disable plugins
   become: yes
-  loop: "{{ plugins | dict2items }}"
+  loop: "{{ microk8s_plugins | dict2items }}"
   command: "microk8s.disable {{ item.key }}"
   loop_control: 
     label: "{{ item.key }}"
@@ -99,14 +99,14 @@
   command: "microk8s.enable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already enabled' not in command_result.stdout"
-  when: plugins.registry
+  when: microk8s_plugins.registry
 
 - name: Disable registry
   become: yes
   command: "microk8s.disable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already disabled' not in command_result.stdout"
-  when: not plugins.registry
+  when: not microk8s_plugins.registry
 
 - name: Disable snap autoupdate
   blockinfile:

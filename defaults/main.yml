@@ -8,7 +8,7 @@ microk8s_version: "1.19/stable"
 microk8s_disable_snap_autoupdate: false
 
 # plugin configuration
-plugins:
+microk8s_plugins:
   dashboard: true      # The Kubernetes dashboard
   dns: true            # CoreDNS
   helm3: true          # Helm 3 - Kubernetes package manager
