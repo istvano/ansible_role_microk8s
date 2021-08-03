@@ -38,7 +38,7 @@
   command: "snap alias microk8s.helm3 helm"
   changed_when: false
   register: aliashelmout
-  when: microk8s_plugin_helm3_enable
+  when: plugins.helm3
 
 - name: Create custom certificates
   become: yes
@@ -74,187 +74,39 @@
   register: command_result
   changed_when: "'0 added, 0 removed' not in command_result.stdout"
 
-- name: Enable rbac
+- name: Enable plugins
   become: yes
-  command: "microk8s.enable rbac"
+  loop: "{{ microk8s_plugins | dict2items }}"
+  command: "microk8s.enable {{ item.key }}"
+  loop_control: 
+    label: "{{ item.key }}"
   register: command_result
-  changed_when: "'Addon rbac is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_rbac_enable
+  changed_when: "'Addon {{ item.key }} is already enabled' not in command_result.stdout"
+  when: item.value and item.key != "registry"
 
-- name: Disable rbac
+- name: Disable plugins
   become: yes
-  command: "microk8s.disable rbac"
+  loop: "{{ microk8s_plugins | dict2items }}"
+  command: "microk8s.disable {{ item.key }}"
+  loop_control: 
+    label: "{{ item.key }}"
   register: command_result
-  changed_when: "'Addon rbac is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_rbac_enable
-
-- name: Enable dns
-  become: yes
-  command: "microk8s.enable dns"
-  register: command_result
-  changed_when: "'Addon dns is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_dns_enable
-
-- name: Disable dns
-  become: yes
-  command: "microk8s.disable dns"
-  register: command_result
-  changed_when: "'Addon dns is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_dns_enable
-
-- name: Enable storage
-  become: yes
-  command: "microk8s.enable storage"
-  register: command_result
-  changed_when: "'Addon storage is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_storage_enable
-
-- name: Disable storage
-  become: yes
-  command: "microk8s.disable storage"
-  register: command_result
-  changed_when: "'Addon storage is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_storage_enable
+  changed_when: "'Addon {{ item.key }} is already disabled' not in command_result.stdout"
+  when: not item.value and item.key != "registry"
 
 - name: Enable registry
   become: yes
-  command: "microk8s.enable registry:size={{ microk8s_plugin_registry_size }}"
+  command: "microk8s.enable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_registry_enable
+  when: microk8s_plugins.registry
 
 - name: Disable registry
   become: yes
-  command: "microk8s.disable registry:size={{ microk8s_plugin_registry_size }}"
+  command: "microk8s.disable registry:size={{ registry_size }}"
   register: command_result
   changed_when: "'Addon registry is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_registry_enable
-
-- name: Enable metrics-server
-  become: yes
-  command: "microk8s.enable metrics-server"
-  register: command_result
-  changed_when: "'Addon metrics-server is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_metricsserver_enable
-
-- name: Disable metrics-server
-  become: yes
-  command: "microk8s.disable metrics-server"
-  register: command_result
-  changed_when: "'Addon metrics-server is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_metricsserver_enable
-
-- name: Enable helm3
-  become: yes
-  command: "microk8s.enable helm3"
-  register: command_result
-  changed_when: "'Addon helm3 is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_helm3_enable
-
-- name: Disable helm3
-  become: yes
-  command: "microk8s.disable helm3"
-  register: command_result
-  changed_when: "'Addon helm3 is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_helm3_enable
-
-- name: Enable ingress
-  become: yes
-  command: "microk8s.enable ingress"
-  register: command_result
-  changed_when: "'Addon ingress is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_ingress_enable
-
-- name: Disable ingress
-  become: yes
-  command: "microk8s.disable ingress"
-  register: command_result
-  changed_when: "'Addon ingress is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_ingress_enable
-
-- name: Enable dashboard
-  become: yes
-  command: "microk8s.enable dashboard"
-  register: command_result
-  changed_when: "'Addon dashboard is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_dashboard_enable
-
-- name: Disable dashboard
-  become: yes
-  command: "microk8s.disable dashboard"
-  register: command_result
-  changed_when: "'Addon dashboard is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_dashboard_enable
-
-- name: Enable fluentd
-  become: yes
-  command: "microk8s.enable fluentd"
-  register: command_result
-  changed_when: "'Addon fluentd is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_fluentd_enable
-
-- name: Disable fluentd
-  become: yes
-  command: "microk8s.disable fluentd"
-  register: command_result
-  changed_when: "'Addon fluentd is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_fluentd_enable
-
-- name: Enable prometheus
-  become: yes
-  command: "microk8s.enable prometheus"
-  register: command_result
-  changed_when: "'Addon prometheus is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_prometheus_enable
-
-- name: Disable prometheus
-  become: yes
-  command: "microk8s.disable prometheus"
-  register: command_result
-  changed_when: "'Addon prometheus is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_prometheus_enable
-
-- name: Enable metallb
-  become: yes
-  command: "microk8s.enable metallb"
-  register: command_result
-  changed_when: "'Addon metallb is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_metallb_enable
-
-- name: Disable metallb
-  become: yes
-  command: "microk8s.disable metallb"
-  register: command_result
-  changed_when: "'Addon metallb is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_metallb_enable
-
-- name: Enable host access
-  become: yes
-  command: "microk8s.enable host-access"
-  register: command_result
-  changed_when: "'Addon host-access is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_host_access_enable
-
-- name: Disable host access
-  become: yes
-  command: "microk8s.disable host-access"
-  register: command_result
-  changed_when: "'Addon host-access is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_host_access_enable
-
-- name: Enable traefik
-  become: yes
-  command: "microk8s.enable traefik"
-  register: command_result
-  changed_when: "'Addon traefik is already enabled' not in command_result.stdout"
-  when: microk8s_plugin_traefik_enable
-
-- name: Disable traefik
-  become: yes
-  command: "microk8s.disable traefik"
-  register: command_result
-  changed_when: "'Addon traefik is already disabled' not in command_result.stdout"
-  when: not microk8s_plugin_traefik_enable
+  when: not microk8s_plugins.registry
 
 - name: Disable snap autoupdate
   blockinfile:
