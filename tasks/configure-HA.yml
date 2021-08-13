@@ -42,5 +42,5 @@
   - name: Set the microk8s join command on the microk8s node
     command: "{{ microk8s_join_command.stdout }}"
     when: microk8s_cluster_node.stdout.find(inventory_hostname) == -1
-
+  become: yes
   when: inventory_hostname != designated_host
