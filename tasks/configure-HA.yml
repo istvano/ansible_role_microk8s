@@ -22,7 +22,7 @@
     changed_when: false
 
   - name: Get the microk8s join command from the microk8s master
-    shell: "microk8s add-node | head -n 2 | tail -n 1"
+    shell: "microk8s add-node | grep -E -m1 'microk8s join {{ microk8s_ip_regex_HA }}'"
     delegate_to: "{{ designated_host }}"
     delegate_facts: true
     changed_when: false
