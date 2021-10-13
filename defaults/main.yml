@@ -33,6 +33,7 @@ microk8s_plugins:
   prometheus: false    # Prometheus operator for monitoring and logging
   traefik: false
 
+microk8s_dns_resolvers: 8.8.8.8,8.8.4.4
 
 registry_size: 20Gi
 helm3_repositories:

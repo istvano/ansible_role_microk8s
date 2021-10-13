@@ -1,0 +1,40 @@
+- name: Enable plugins
+  become: yes
+  loop: "{{ microk8s_plugins | dict2items }}"
+  command: "microk8s.enable {{ item.key }}"
+  loop_control:
+    label: "{{ item.key }}"
+  register: command_result
+  changed_when: "'Addon ' + item.key + ' is already enabled' not in command_result.stdout"
+  when:
+    - item.value
+    - item.key != "dns"
+    - item.key != "registry"
+
+- name: Disable plugins
+  become: yes
+  loop: "{{ microk8s_plugins | dict2items }}"
+  command: "microk8s.disable {{ item.key }}"
+  loop_control:
+    label: "{{ item.key }}"
+  register: command_result
+  changed_when: "'Addon ' + item.key + ' is already disabled' not in command_result.stdout"
+  when: not item.value
+
+- name: Enable dns
+  become: yes
+  command: "microk8s.enable dns:{{ microk8s_dns_resolvers }}"
+  register: command_result
+  changed_when: "'Addon dns is already enabled' not in command_result.stdout"
+  when:
+    - "'dns' in microk8s_plugins"
+    - microk8s_plugins.dns
+
+- name: Enable registry
+  become: yes
+  command: "microk8s.enable registry:size={{ registry_size }}"
+  register: command_result
+  changed_when: "'Addon registry is already enabled' not in command_result.stdout"
+  when:
+    - "'registry' in microk8s_plugins"
+    - microk8s_plugins.registry
