@@ -38,7 +38,9 @@
   command: "snap alias microk8s.helm3 helm"
   changed_when: false
   register: aliashelmout
-  when: microk8s_plugins.helm3
+  when:
+    - "'helm3' in microk8s_plugins"
+    - microk8s_plugins.helm3
 
 - name: Create custom certificates
   become: yes

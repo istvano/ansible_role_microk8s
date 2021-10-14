@@ -8,34 +8,33 @@ microk8s_version: "1.19/stable"
 microk8s_disable_snap_autoupdate: false
 
 # plugin configuration
+microk8s_dns_resolvers: 8.8.8.8,8.8.4.4
+registry_size: 20Gi
 microk8s_plugins:
-  dashboard: true      # The Kubernetes dashboard
-  dns: true            # CoreDNS
-  helm3: true          # Helm 3 - Kubernetes package manager
-  host-access: true    # Allow Pods connecting to Host services smoothly
-  ingress: true        # Ingress controller for external access
-  metrics-server: true # K8s Metrics Server for API access to service metrics
-  rbac: true           # Role-Based Access Control for authorisation
-  registry: true       # Private image registry exposed on localhost:32000
-  storage: true        # Storage class; allocates storage from host directory
-  ambassador: false    # Ambassador API Gateway and Ingress
-  cilium: false        # SDN, fast with full network policy
-  fluentd: false       # Elasticsearch-Fluentd-Kibana logging and monitoring
-  gpu: false           # Automatic enablement of Nvidia CUDA
-  helm: false          # Helm 2 - the package manager for Kubernetes
-  istio: false         # Core Istio service mesh services
-  jaeger: false        # Kubernetes Jaeger operator with its simple config
-  knative: false       # The Knative framework on Kubernetes.
-  kubeflow: false      # Kubeflow for easy ML deployments
-  linkerd: false       # Linkerd is a service mesh for Kubernetes and other frameworks
-  metallb: false       # Loadbalancer for your Kubernetes cluster
-  multus: false        # Multus CNI enables attaching multiple network interfaces to pods
-  prometheus: false    # Prometheus operator for monitoring and logging
+  dashboard: true                     # The Kubernetes dashboard
+  dns: "{{ microk8s_dns_resolvers }}" # CoreDNS
+  helm3: true                         # Helm 3 - Kubernetes package manager
+  host-access: true                   # Allow Pods connecting to Host services smoothly
+  ingress: true                       # Ingress controller for external access
+  metrics-server: true                # K8s Metrics Server for API access to service metrics
+  rbac: true                          # Role-Based Access Control for authorisation
+  registry: "{{ registry_size }}"     # Private image registry exposed on localhost:32000
+  storage: true                       # Storage class; allocates storage from host directory
+  ambassador: false                   # Ambassador API Gateway and Ingress
+  cilium: false                       # SDN, fast with full network policy
+  fluentd: false                      # Elasticsearch-Fluentd-Kibana logging and monitoring
+  gpu: false                          # Automatic enablement of Nvidia CUDA
+  helm: false                         # Helm 2 - the package manager for Kubernetes
+  istio: false                        # Core Istio service mesh services
+  jaeger: false                       # Kubernetes Jaeger operator with its simple config
+  knative: false                      # The Knative framework on Kubernetes.
+  kubeflow: false                     # Kubeflow for easy ML deployments
+  linkerd: false                      # Linkerd is a service mesh for Kubernetes and other frameworks
+  metallb: false                      # Loadbalancer for your Kubernetes cluster
+  multus: false                       # Multus CNI enables attaching multiple network interfaces to pods
+  prometheus: false                   # Prometheus operator for monitoring and logging
   traefik: false
 
-microk8s_dns_resolvers: 8.8.8.8,8.8.4.4
-
-registry_size: 20Gi
 helm3_repositories:
   - name: stable
     url: https://charts.helm.sh/stable

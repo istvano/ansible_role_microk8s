@@ -1,40 +1,34 @@
-- name: Enable plugins
+- name: get current addons state
   become: yes
-  loop: "{{ microk8s_plugins | dict2items }}"
-  command: "microk8s.enable {{ item.key }}"
+  command:
+    cmd: microk8s.status --format yaml
+  changed_when: no
+  register: microk8s_status
+
+- name: set current state fact
+  set_fact:
+    microk8s_status: "{{ microk8s_status.stdout | from_yaml }}"
+
+- name: enable addons
+  become: yes
+  loop: "{{ microk8s_status.addons }}"
   loop_control:
-    label: "{{ item.key }}"
-  register: command_result
-  changed_when: "'Addon ' + item.key + ' is already enabled' not in command_result.stdout"
+    label: "{{ item.name }}"
+  command:
+    cmd: microk8s.enable {{ item.name }}{% if microk8s_plugins[item.name] != True %}:{{ microk8s_plugins[item.name] }}{% endif %}
   when:
-    - item.value
-    - item.key != "dns"
-    - item.key != "registry"
+    - item.status == 'disabled'
+    - item.name in microk8s_plugins
+    - microk8s_plugins[item.name]
 
-- name: Disable plugins
+- name: disable addons
   become: yes
-  loop: "{{ microk8s_plugins | dict2items }}"
-  command: "microk8s.disable {{ item.key }}"
+  loop: "{{ microk8s_status.addons }}"
   loop_control:
-    label: "{{ item.key }}"
-  register: command_result
-  changed_when: "'Addon ' + item.key + ' is already disabled' not in command_result.stdout"
-  when: not item.value
-
-- name: Enable dns
-  become: yes
-  command: "microk8s.enable dns:{{ microk8s_dns_resolvers }}"
-  register: command_result
-  changed_when: "'Addon dns is already enabled' not in command_result.stdout"
+    label: "{{ item.name }}"
+  command:
+    cmd: microk8s.disable {{ item.name }}
   when:
-    - "'dns' in microk8s_plugins"
-    - microk8s_plugins.dns
-
-- name: Enable registry
-  become: yes
-  command: "microk8s.enable registry:size={{ registry_size }}"
-  register: command_result
-  changed_when: "'Addon registry is already enabled' not in command_result.stdout"
-  when:
-    - "'registry' in microk8s_plugins"
-    - microk8s_plugins.registry
+    - item.status == 'enabled'
+    - item.name in microk8s_plugins
+    - not microk8s_plugins[item.name]
