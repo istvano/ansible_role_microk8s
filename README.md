@@ -24,7 +24,7 @@ Some variables available in this role are listed here.  The full set is
 defined in `[defaults/main.yml](defaults/main.yml)`.
 
 * `microk8s_version`: Version to use, defaults to `1.19/stable`.
-* `microk8s_plugins`: Enable/disable various plugins.
+* `microk8s_plugins`: Enable/disable various plugins. A string will be passed as `arg` when enabling addon using `name:arg`
 * `microk8s_enable_HA`: Enable/disable high-availability.
 * `microk8s_group_HA`: Hostgroup whose members will form HA cluster.
 * `microk8s_csr_template`: If defined, will cause a custom CSR to be used in
@@ -38,6 +38,7 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
     - role: istvano.microk8s
       vars:
         microk8s_plugins:
+          dns: "1.1.1.1"
           istio: true
           ingress: true
 ```
