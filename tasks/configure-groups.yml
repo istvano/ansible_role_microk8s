@@ -50,7 +50,7 @@
 - name: add helm repository to user
   become: yes
   become_user: '{{ user }}'
-  shell: "helm repo add stable https://charts.helm.sh/stable"
+  shell: "helm repo add {{ helm3_repositories.name }} {{ helm3_repositories.url }}"
   args:
     executable: /bin/bash
   changed_when: true
@@ -58,7 +58,7 @@
   loop_control:
     loop_var: user
     label: '{{ user }}'
-  when: microk8s_plugin_helm3_enable
+  when: microk8s_plugins.helm3
 
 - name: update helm repos
   become: yes
@@ -71,4 +71,4 @@
   loop_control:
     loop_var: user
     label: '{{ user }}'
-  when: microk8s_plugin_helm3_enable
+  when: microk8s_plugins.helm3
