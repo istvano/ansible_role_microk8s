@@ -4,14 +4,13 @@
 #
 
 # version management
-microk8s_version: "1.19/stable"
+microk8s_version: "1.22/stable"
 microk8s_disable_snap_autoupdate: false
 
 # plugin configuration
 microk8s_dns_resolvers: 8.8.8.8,8.8.4.4
 registry_size: 20Gi
 microk8s_plugins:
-  dashboard: true                         # The Kubernetes dashboard
   dns: "{{ microk8s_dns_resolvers }}"     # CoreDNS
   helm3: true                             # Helm 3 - Kubernetes package manager
   host-access: true                       # Allow Pods connecting to Host services smoothly
@@ -20,6 +19,7 @@ microk8s_plugins:
   rbac: true                              # Role-Based Access Control for authorisation
   registry: "size={{ registry_size }}"    # Private image registry exposed on localhost:32000
   storage: true                           # Storage class; allocates storage from host directory
+  dashboard: true                         # The Kubernetes dashboard
   ambassador: false                       # Ambassador API Gateway and Ingress
   cilium: false                           # SDN, fast with full network policy
   fluentd: false                          # Elasticsearch-Fluentd-Kibana logging and monitoring
@@ -33,7 +33,12 @@ microk8s_plugins:
   metallb: false                          # Loadbalancer for your Kubernetes cluster
   multus: false                           # Multus CNI enables attaching multiple network interfaces to pods
   prometheus: false                       # Prometheus operator for monitoring and logging
-  traefik: false
+  traefik: false                          # another ingress
+  portainer: false                        # Container management dashboard
+  keda: false                             # Kubernetes Event-driven Autoscaling operator.
+  kata: false                             # A secure container runtime with lightweight virtual machines
+  openebs: false                          # openebs storage
+  openfaas: false                         # serverless
 
 helm3_repositories:
   - name: stable
