@@ -40,4 +40,4 @@
   become: yes
   when:
     - inventory_hostname != designated_host
-    - inventory_hostname in groups[microk8s_group_WORKER]
+    - inventory_hostname in groups[microk8s_group_WORKERS]
