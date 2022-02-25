@@ -1,15 +1,5 @@
 ---
 
-- name: Enumerate all cluster hosts within the hosts file
-  become: yes
-  blockinfile:
-    dest: /etc/hosts
-    marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
-    content: |
-      {% for host in groups[microk8s_group_HA] %}
-      {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
-      {% endfor %}
-
 - name: Find the designated host
   set_fact:
     designated_host: '{{ (groups[microk8s_group_HA]|sort)[0] }}'
@@ -40,7 +30,7 @@
     changed_when: false
 
   - name: Set the microk8s join command on the microk8s node
-    command: "{{ microk8s_join_command.stdout }}"
+    command: "{{ microk8s_join_command.stdout }} --worker"
     when: microk8s_cluster_node.stdout.find(inventory_hostname) == -1
     register: join_command_output
     failed_when:
@@ -50,8 +40,4 @@
   become: yes
   when:
     - inventory_hostname != designated_host
-    - inventory_hostname in groups[microk8s_group_HA]
-
-- name: configure cluster addons
-  include_tasks: addons.yml
-  when: inventory_hostname == designated_host
+    - inventory_hostname in groups[microk8s_group_WORKER]

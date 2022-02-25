@@ -56,5 +56,8 @@ microk8s_group_HA: "microk8s_HA"
 # regex to select IP address for joining nodes in HA setup
 microk8s_ip_regex_HA: "([0-9]{1,3}[\\.]){3}[0-9]{1,3}"
 
+# hostgroup whose members will act as worker nodes only (no control-plane components run here)
+microk8s_group_WORKERS: "microk8s_WORKERS"
+
 # for setting up custom certificate request.  Set to template name to enable
 #microk8s_csr_template: null
