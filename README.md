@@ -27,6 +27,7 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
 * `microk8s_plugins`: Enable/disable various plugins. A string will be passed as `arg` when enabling addon using `name:arg`
 * `microk8s_enable_HA`: Enable/disable high-availability.
 * `microk8s_group_HA`: Hostgroup whose members will form HA cluster.
+* `microk8s_group_WORKERS`: Hostgroup whose members will act as worker nodes only (no control-plane components run here)
 * `microk8s_csr_template`: If defined, will cause a custom CSR to be used in
   generating certificates.
 
@@ -55,6 +56,10 @@ a template, and then copy the CSR in
 `/var/snap/microk8s/current/certs/csr.conf.template` to your playbook's
 templates directory, make the edits and set the `microk8s_csr_template`
 variable accordingly, and re-run the playbook.
+
+### Adding worker only nodes (1.23+ only)
+
+It is possible to configure additional nodes to act as workers only within your microk8s cluster. This is possible by configuring the ansible hostgroup `microk8s_WORKERS` (name of the group is configurable via `microk8s_group_WORKERS`). Every host listed within the hostgroup will essentially run `microk8s join .... --worker`, more info on this can be found here: [microk8s-clustering](https://microk8s.io/docs/clustering).
 
 ## Testing
 

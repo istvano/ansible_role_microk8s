@@ -12,3 +12,7 @@
 - name: configure High Availability
   include_tasks: configure-HA.yml
   when: "microk8s_enable_HA"
+
+- name: configure workers
+  include_tasks: configure-WORKERS.yml
+  when: "groups[microk8s_group_WORKERS]|length>0"
