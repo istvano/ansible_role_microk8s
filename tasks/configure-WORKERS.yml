@@ -25,9 +25,13 @@
     changed_when: false
     register: microk8s_cluster_node
 
-  - name: Waiting for microk8s to be ready on microk8s host node
+  - name: Waiting for microk8s to be ready on microk8s worker node
     command: "microk8s status --wait-ready"
     changed_when: false
+    register: status_command_output
+    failed_when:
+      - "'This MicroK8s deployment is acting as a node in a cluster.' not in status_command_output.stdout_lines"
+      - status_command_output.rc > 0
 
   - name: Set the microk8s join command on the microk8s node
     command: "{{ microk8s_join_command.stdout }} --worker"
