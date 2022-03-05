@@ -81,6 +81,7 @@
   changed_when: "'0 added, 0 removed' not in command_result.stdout"
 
 - name: Disable snap autoupdate
+  become: true
   blockinfile:
     dest: /etc/hosts
     marker: "# {mark} ANSIBLE MANAGED: microk8s Disable snap autoupdate"
