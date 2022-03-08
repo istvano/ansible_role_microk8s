@@ -1,6 +1,6 @@
 ---
 
-- name: Enumerate all cluster hosts within the hosts file
+- name: Enumerate all cluster HA hosts within the hosts file
   become: yes
   blockinfile:
     dest: /etc/hosts
@@ -9,6 +9,17 @@
       {% for host in groups[microk8s_group_HA] %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
       {% endfor %}
+
+- name: Enumerate all cluster worker hosts within the hosts file
+  become: yes
+  blockinfile:
+    dest: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED: microk8s WORKER Cluster Hosts"
+    content: |
+      {% for host in groups[microk8s_group_WORKERS] %}
+      {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
+      {% endfor %}
+  when: add_workers_to_hostfile
 
 - name: Find the designated host
   set_fact:
