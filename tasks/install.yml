@@ -2,6 +2,7 @@
   apt:
     name:
       - snapd
+    update_cache: yes
     state: present
   become: yes
   when: ansible_distribution == 'Ubuntu'
