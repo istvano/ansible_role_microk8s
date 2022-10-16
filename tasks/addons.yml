@@ -4,6 +4,7 @@
     cmd: microk8s.status --format yaml
   changed_when: no
   register: microk8s_status
+  check_mode: no
 
 - name: set current state fact
   set_fact:
