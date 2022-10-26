@@ -13,7 +13,6 @@
   include_tasks: configure-HA.yml
   when: "microk8s_enable_HA"
 
-# disable it at the moment as it is broken
 - name: configure workers
   include_tasks: configure-WORKERS.yml
   when: "groups[microk8s_group_WORKERS]|length>0"
