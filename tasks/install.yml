@@ -1,11 +1,10 @@
 - name: Make sure snapd is installed
-  apt:
+  package:
     name:
       - snapd
-    update_cache: yes
-    state: present
+    state: latest
   become: yes
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution != 'Archlinux'
 
 - name: Make sure snapd is installed
   pacman:
@@ -14,6 +13,17 @@
     state: present
   become: yes
   when: ansible_distribution == 'Archlinux'
+
+- name: Check if is raspberry
+  shell: "uname -r"
+  register: uname
+
+- name: Install raspberry specific packages
+  package:
+    name:
+      - linux-modules-extra-raspi
+    state: latest
+  when: uname.stdout | regex_search('raspi')
 
 - name: Install microk8s
   become: yes
