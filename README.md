@@ -10,6 +10,8 @@ Role to download and install [microk8s](https://microk8s.io/) the smallest, simp
         * Ubuntu
             * Xenial (16.04)
             * Bionic (18.04)
+            * Focal (20.04) (untested)
+            * Jammy (22.04) (untested)
     * Arch Linux (untested)
 
 ## License
@@ -23,7 +25,7 @@ MIT
 Some variables available in this role are listed here.  The full set is
 defined in `[defaults/main.yml](defaults/main.yml)`.
 
-* `microk8s_version`: Version to use, defaults to `1.19/stable`.
+* `microk8s_version`: Version to use, defaults to `1.27/stable`.
 * `microk8s_plugins`: Enable/disable various plugins. A string will be passed as `arg` when enabling addon using `name:arg`
 * `microk8s_enable_HA`: Enable/disable high-availability.
 * `microk8s_group_HA`: Hostgroup whose members will form HA cluster.

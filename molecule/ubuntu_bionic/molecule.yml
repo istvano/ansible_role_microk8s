@@ -11,8 +11,8 @@ lint: |
   ansible-lint .
 
 platforms:
-  - name: ansible_role_microk8s_ubuntu_min
-    image: ubuntu:16.04
+  - name: ansible_role_microk8s_ubuntu_bionic
+    image: ubuntu:18.04
     dockerfile: ../default/Dockerfile.j2
 
 provisioner:
@@ -23,7 +23,7 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: ubuntu_min
+  name: ubuntu_bionic
 
 verifier:
   name: testinfra
