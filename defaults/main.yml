@@ -16,7 +16,7 @@ microk8s_plugins:
   ingress: true                           # Ingress controller for external access
   metrics-server: true                    # K8s Metrics Server for API access to service metrics
   rbac: true                              # Role-Based Access Control for authorisation
-  storage: true                           # Storage class; allocates storage from host directory
+  hostpath-storage: true                  # Storage class; allocates storage from host directory
   registry: "size={{ registry_size }}"    # Private image registry exposed on localhost:32000
   dashboard: true                         # The Kubernetes dashboard
   ambassador: false                       # Ambassador API Gateway and Ingress

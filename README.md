@@ -45,6 +45,8 @@ defined in `[defaults/main.yml](defaults/main.yml)`.
           istio: true
           ingress: true
 ```
+Note: when overriding plugins list, it is recommended to copy-paste the entire list of plugins from the
+`defaults/main.yml` because some Ansible tasks reference them (e.g. `helm3`) and the deployment may fail.
 
 ### Custom certificate request template
 
