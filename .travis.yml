@@ -21,10 +21,16 @@ jobs:
         - MOLECULE_SCENARIO=debian_min
     - env:
         - MOLECULEW_ANSIBLE=2.7.15
-        - MOLECULE_SCENARIO=ubuntu_max
+        - MOLECULE_SCENARIO=ubuntu_jammy
     - env:
         - MOLECULEW_ANSIBLE=2.7.15
-        - MOLECULE_SCENARIO=ubuntu_min
+        - MOLECULE_SCENARIO=ubuntu_focal
+    - env:
+        - MOLECULEW_ANSIBLE=2.7.15
+        - MOLECULE_SCENARIO=ubuntu_bionic
+    - env:
+        - MOLECULEW_ANSIBLE=2.7.15
+        - MOLECULE_SCENARIO=ubuntu_xenial
     - env:
         - MOLECULEW_ANSIBLE=2.9.1
         - MOLECULE_SCENARIO=centos
@@ -36,10 +42,16 @@ jobs:
         - MOLECULE_SCENARIO=debian_min
     - env:
         - MOLECULEW_ANSIBLE=2.9.1
-        - MOLECULE_SCENARIO=ubuntu_max
+        - MOLECULE_SCENARIO=ubuntu_jammy
     - env:
         - MOLECULEW_ANSIBLE=2.9.1
-        - MOLECULE_SCENARIO=ubuntu_min
+        - MOLECULE_SCENARIO=ubuntu_focal
+    - env:
+        - MOLECULEW_ANSIBLE=2.9.1
+        - MOLECULE_SCENARIO=ubuntu_bionic
+    - env:
+        - MOLECULEW_ANSIBLE=2.9.1
+        - MOLECULE_SCENARIO=ubuntu_xenial
 
 # Require Ubuntu 16.04
 dist: xenial

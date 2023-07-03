@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
+
+platforms:
+  - name: ansible_role_microk8s_ubuntu_jammy
+    image: ubuntu:22.04
+    dockerfile: ../default/Dockerfile.j2
+
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../default/playbook.yml
+  lint:
+    name: ansible-lint
+
+scenario:
+  name: ubuntu_jammy
+
+verifier:
+  name: testinfra
+  directory: ../default/tests
+  lint:
+    name: flake8
