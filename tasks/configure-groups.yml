@@ -42,6 +42,7 @@
     owner: '{{ user }}'
     group: '{{ user }}'
     recurse: yes
+    mode: 0750
   with_items: '{{ users }}'
   loop_control:
     loop_var: user
