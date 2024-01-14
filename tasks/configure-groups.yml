@@ -1,5 +1,21 @@
 # add user specific settings
 ---
+
+# Fetch home directories of users https://stackoverflow.com/a/48892377
+- user:
+    name: '{{ user }}'
+    state: present
+  register: user_info
+  with_items: '{{ users }}'
+  loop_control:
+    loop_var: user
+    label: '{{ user }}'
+
+- name: Transform user_homes into a dictionary
+  set_fact:
+    user_info_dict: "{{ user_info_dict | default({}) | combine({item['user']: item}) }}"
+  with_items: "{{ user_info.results }}"
+
 - name: add user to group
   become: yes
   command: "usermod -a -G microk8s {{ user }}"
@@ -13,7 +29,7 @@
   become: yes
   become_user: '{{ user }}'
   file:
-    path: ~/.kube
+    path: "{{ user_info_dict[user]['home'] }}/.kube"
     state: directory
     owner: '{{ user }}'
     group: '{{ user }}'
@@ -26,7 +42,7 @@
 - name: create kubectl config
   become: yes
   changed_when: true
-  shell: microk8s config > /home/{{ user }}/.kube/config
+  shell: microk8s config > {{ user_info_dict[user]['home'] }}/.kube/config
   args:
     executable: /bin/bash
   with_items: '{{ users }}'
@@ -37,7 +53,7 @@
 - name: reaffirm permission on files
   become: yes
   file:
-    path: ~/.kube
+    path: "{{ user_info_dict[user]['home'] }}/.kube"
     state: directory
     owner: '{{ user }}'
     group: '{{ user }}'
