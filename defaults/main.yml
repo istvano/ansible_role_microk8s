@@ -45,7 +45,7 @@ helm3_repositories:
     url: https://charts.helm.sh/stable
 
 # users to make members of microk8s group
-users: []
+users: [dshea]
 
 # enable high-availability?
 microk8s_enable_HA: false
