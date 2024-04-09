@@ -331,14 +331,14 @@ print_versions() {
 }
 
 wrapper_versions() {
-    detemine_versions
+    determine_versions
 
     print_versions
     exit
 }
 
 wrapper_freeze() {
-    detemine_versions
+    determine_versions
 
     banner 'Freezing versions'
 
@@ -386,7 +386,7 @@ wrapper_unfreeze() {
 }
 
 wrapper_upgrade_versions() {
-    detemine_versions
+    determine_versions
 
     banner 'Upgrading versions'
 
@@ -691,7 +691,7 @@ parse_args() {
     set -e
 }
 
-detemine_versions() {
+determine_versions() {
     if [[ $USE_SYSTEM_DEPENDENCIES == false ]]; then
         USE_SYSTEM_DEPENDENCIES="$MOLECULEW_USE_SYSTEM"
     fi
@@ -802,7 +802,7 @@ detemine_versions() {
 }
 
 activate_virtualenv() {
-    detemine_versions
+    determine_versions
 
     MOLECULE_WRAPPER_ENV="$HOME/.moleculew/ml-${MOLECULE_VERSION}_an-${ANSIBLE_VERSION}_py-${PYTHON_VERSION}_yl-${YAMLLINT_VERSION}_al-${ANSIBLE_LINT_VERSION}_f8-${FLAKE8_VERSION}_ti-${TESTINFRA_VERSION}"
 

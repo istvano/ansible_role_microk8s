@@ -59,7 +59,7 @@ microk8s_ip_regex_HA: "([0-9]{1,3}[\\.]){3}[0-9]{1,3}"
 # hostgroup whose members will act as worker nodes only (no control-plane components run here)
 microk8s_group_WORKERS: "microk8s_WORKERS"
 
-# option to add workers hostgroup memembers to hostfile
+# option to add workers hostgroup members to hostfile
 add_workers_to_hostfile: false
 
 # for setting up custom certificate request.  Set to template name to enable
