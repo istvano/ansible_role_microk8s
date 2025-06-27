@@ -4,3 +4,8 @@
 - name: Refresh certs
   become: yes
   command: microk8s refresh-certs
+
+- handlers:
+  - name: Restart MicroK8s
+    become: yes
+    command: microk8s stop && microk8s start

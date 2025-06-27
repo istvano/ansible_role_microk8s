@@ -7,6 +7,7 @@
   when: ansible_distribution == 'Ubuntu'
 
 - name: Make sure snapd is installed
+  ignore_errors: true # ignore apt snapted
   pacman:
     name:
       - snapd
@@ -29,6 +30,15 @@
   failed_when:
       - "'This MicroK8s deployment is acting as a node in a cluster.' not in mk8sstatusout.stdout_lines"
       - mk8sstatusout.rc > 0
+
+- name: Configure kubelet to use specific node IP
+  become: yes
+  lineinfile:
+    path: /var/snap/microk8s/current/args/kubelet
+    regexp: '^--node-ip='
+    line: "--node-ip={{ microk8s_node_ip }}"
+    create: yes
+  notify: Restart MicroK8s
 
 
 - name: Create kubectl alias
@@ -88,3 +98,8 @@
     content: |
       127.0.0.1 api.snapcraft.io
   when: microk8s_disable_snap_autoupdate
+
+  handlers:
+  - name: Restart MicroK8s
+    become: yes
+    command: microk8s stop && microk8s start

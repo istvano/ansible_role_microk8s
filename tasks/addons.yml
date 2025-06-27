@@ -21,14 +21,21 @@
     - item.name in microk8s_plugins
     - microk8s_plugins[item.name]
 
-- name: disable addons
+- name: Fallback - Force enable DNS if still not enabled
   become: yes
-  loop: "{{ microk8s_status.addons }}"
-  loop_control:
-    label: "{{ item.name }}"
-  command:
-    cmd: microk8s.disable {{ item.name }}
-  when:
-    - item.status == 'enabled'
-    - item.name in microk8s_plugins
-    - not microk8s_plugins[item.name]
+  command: microk8s enable dns:{{ microk8s_dns_resolvers }}
+  when: >
+    microk8s_status.addons is defined and
+    (microk8s_status.addons | selectattr('name', 'equalto', 'dns') | map(attribute='status') | list | first | default('disabled')) != 'enabled'
+
+#- name: disable addons
+#  become: yes
+#  loop: "{{ microk8s_status.addons }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+#  command:
+#    cmd: microk8s.disable {{ item.name }}
+#  when:
+#    - item.status == 'enabled'
+#    - item.name in microk8s_plugins
+#    - not microk8s_plugins[item.name]
