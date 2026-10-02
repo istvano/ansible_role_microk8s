@@ -18,12 +18,34 @@
   shell: "uname -r"
   register: uname
 
+- name: Gather available packages to check for linux-modules-extra-raspi
+  package_facts:
+    manager: apt
+  when:
+    # '"raspi" in uname.stdout' rather than 'uname.stdout | regex_search(...)':
+    # regex_search returns None when it does not match, and ansible-core 2.19+
+    # rejects a conditional that does not evaluate to a boolean, so the regex
+    # form fails the play on every non-Pi host.
+    - "'raspi' in uname.stdout"
+    - ansible_facts.os_family == 'Debian'
+
 - name: Install raspberry specific packages
   package:
     name:
       - linux-modules-extra-raspi
     state: latest
-  when: uname.stdout | regex_search('raspi')
+  when:
+    - "'raspi' in uname.stdout"
+    # linux-modules-extra-raspi was removed in Ubuntu 24.04 (noble): kernel
+    # modules are zstd-compressed, so the split into a separate -extra package
+    # was dropped and everything is now in linux-modules. See
+    # https://bugs.launchpad.net/ubuntu/+bug/2048862. Installing it on 24.04 or
+    # later fails with:
+    #   "No package matching 'linux-modules-extra-raspi' is available"
+    # which aborts the play before microk8s is installed. It is also no longer
+    # needed - the modules are in the standard arm64 kernel.
+    - ansible_facts.os_family == 'Debian'
+    - "'linux-modules-extra-raspi' in ansible_facts.packages | default([])"
 
 - name: Install microk8s
   become: yes
